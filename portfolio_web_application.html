@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - นุสรา สุปัน (NUTSARA SUPUN)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#f59e0b',
+                        accent: '#3b82f6',
+                        lightbg: '#f8fafc'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Prompt', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+        
+        /* Splash Screen Transition */
+        .splash-leave {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.8s ease-out;
+            transform: scale(1.1);
+        }
+        
+        /* Timeline line styles */
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: #cbd5e1; /* Tailwind slate-300 */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+        @media (max-width: 767px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased overflow-x-hidden" x-data="portfolioApp()">
+
+    <!-- 1. Splash Screen -->
+    <div id="splash-screen" 
+         class="fixed inset-0 z-50 flex items-center justify-center bg-white overflow-hidden transition-all duration-1000"
+         :class="{ 'splash-leave': !isLoading }">
+        
+        <!-- Background Decoration for Splash -->
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob" style="animation-delay: 2s"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob" style="animation-delay: 4s"></div>
+        
+        <div class="relative z-10 text-center flex flex-col items-center">
+            <div class="w-32 h-32 md:w-48 md:h-48 rounded-full p-2 bg-gradient-to-tr from-primary to-secondary shadow-xl mb-6 transform transition-transform hover:scale-105">
+                <img src="picture_pk.jpg" alt="Profile" class="w-full h-full rounded-full object-cover border-4 border-white" onerror="this.src='https://placehold.co/400x400/1e3a8a/ffffff?text=NS'">
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-primary mb-2 animate-fade-in">นุสรา สุปัน</h1>
+            <p class="text-xl md:text-2xl text-slate-600 font-light mb-6 animate-fade-in" style="animation-delay: 0.2s">Nutsara Supun (Pookie)</p>
+            <div class="flex space-x-2 justify-center mb-4">
+                <div class="w-3 h-3 bg-primary rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                <div class="w-3 h-3 bg-secondary rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                <div class="w-3 h-3 bg-accent rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+            </div>
+            <p class="text-sm text-slate-500 animate-pulse">กำลังเตรียมความพร้อมระบบ...</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-40 transition-all duration-300" :class="{ 'bg-white/95 backdrop-blur-md shadow-md py-2': scrolled, 'bg-transparent py-4': !scrolled }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="font-bold text-xl text-primary cursor-pointer" @click="scrollTo('home')">NS.Portfolio</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex space-x-1">
+                    <template x-for="item in menuItems" :key="item.id">
+                        <button @click="scrollTo(item.id)" 
+                                class="px-3 py-2 rounded-md text-sm font-medium transition-colors hover:text-primary hover:bg-slate-100"
+                                :class="activeSection === item.id ? 'text-primary bg-slate-100' : 'text-slate-600'">
+                            <span x-text="item.label"></span>
+                        </button>
+                    </template>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="lg:hidden flex items-center">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-slate-600 hover:text-primary focus:outline-none p-2 bg-slate-100 rounded-md">
+                        <i class="fas fa-bars text-xl" x-show="!mobileMenuOpen"></i>
+                        <i class="fas fa-times text-xl" x-show="mobileMenuOpen" x-cloak></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="lg:hidden transition-all duration-300 ease-in-out bg-white shadow-lg absolute w-full" 
+             x-show="mobileMenuOpen" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-2"
+             x-cloak>
+            <div class="px-4 pt-2 pb-4 space-y-1 sm:px-3">
+                <template x-for="item in menuItems" :key="item.id">
+                    <button @click="scrollTo(item.id)" 
+                            class="block w-full text-left px-3 py-3 rounded-md text-base font-medium border-b border-slate-50 last:border-0"
+                            :class="activeSection === item.id ? 'text-primary bg-blue-50' : 'text-slate-600 hover:text-primary hover:bg-slate-50'">
+                        <i :class="item.icon" class="mr-2 w-5 text-center"></i>
+                        <span x-text="item.label"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Home) -->
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] flex items-center">
+        <div class="absolute inset-0 z-0 opacity-10">
+             <svg class="absolute right-0 top-0 h-full w-full transform scale-150 translate-x-1/4" viewBox="0 0 100 100" preserveAspectRatio="none">
+                 <path d="M0,100 C20,0 50,100 100,0 L100,100 Z" fill="#1e3a8a" />
+             </svg>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="flex flex-col-reverse lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2 text-center lg:text-left">
+                    <span class="inline-block py-1.5 px-4 rounded-full bg-blue-100 text-primary font-semibold text-sm mb-6 animate-fade-in shadow-sm border border-blue-200">
+                        <i class="fas fa-briefcase mr-2"></i>นักวิชาการศึกษา (Academic Officer)
+                    </span>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 leading-tight mb-6">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">นุสรา สุปัน</span> (ปุ๊กกี้)
+                    </h1>
+                    <p class="text-lg text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        มุ่งมั่นพัฒนางานวิชาการ สนับสนุนการศึกษา พร้อมประสบการณ์ด้านบริหารจัดการและธุรการ การวิเคราะห์ข้อมูล และการประสานงานอย่างมืออาชีพ ปัจจุบันปฏิบัติงาน ณ สถาบันพัฒนามหานคร มหาวิทยาลัยนวมินทราธิราช 
+                    </p>
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                        <button @click="scrollTo('contact')" class="px-8 py-3 bg-primary text-white font-medium rounded-full hover:bg-blue-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fas fa-paper-plane mr-2"></i>ติดต่องาน
+                        </button>
+                        <button @click="scrollTo('education')" class="px-8 py-3 bg-white text-primary border border-primary font-medium rounded-full hover:bg-slate-50 transition shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                            ดูประวัติการศึกษา
+                        </button>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 relative w-full flex justify-center">
+                    <div class="relative w-72 h-72 md:w-96 md:h-96">
+                        <!-- Decorative elements behind image -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-secondary/30 to-primary/30 rounded-3xl transform rotate-6 scale-105 transition-transform hover:rotate-12 duration-500"></div>
+                        <div class="absolute inset-0 bg-white rounded-3xl transform -rotate-3 scale-100 shadow-xl"></div>
+                        <!-- Profile Image -->
+                        <img src="picture_pk.jpg" alt="Nutsara Supun" class="relative z-10 w-full h-full object-cover rounded-3xl shadow-lg" onerror="this.src='https://placehold.co/600x600/1e3a8a/ffffff?text=Profile'">
+                        
+                        <!-- Floating badges -->
+                        <div class="absolute -bottom-4 -right-4 z-20 bg-white p-3 rounded-xl shadow-lg border border-slate-100 flex items-center gap-3 animate-bounce" style="animation-duration: 3s;">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500">มหาบัณฑิต (กำลังศึกษา)</p>
+                                <p class="font-bold text-sm text-slate-800">MBA. KMUTNB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1. ประวัติการศึกษา (Education) -->
+    <section id="education" class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">1. ประวัติการศึกษา</h2>
+                <div class="h-1 w-20 bg-primary mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="relative wrap overflow-hidden p-4 md:p-10 h-full timeline-container">
+                
+                <!-- Master's Degree -->
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12 hidden md:block"></div>
+                    <div class="z-20 flex items-center order-1 bg-primary shadow-xl w-10 h-10 rounded-full border-4 border-white absolute md:relative left-[11px] md:left-auto">
+                        <h1 class="mx-auto font-semibold text-sm text-white"><i class="fas fa-graduation-cap"></i></h1>
+                    </div>
+                    <div class="order-1 glass-card rounded-xl shadow-lg w-full md:w-5/12 px-6 py-5 relative border-t-4 border-t-primary ml-12 md:ml-0">
+                        <h3 class="mb-2 font-bold text-slate-800 text-xl">ปริญญาโท (M.B.A.)</h3>
+                        <span class="inline-block px-3 py-1 bg-blue-100 text-primary text-xs font-bold rounded-full mb-3">2569 - ปัจจุบัน</span>
+                        <p class="text-sm leading-relaxed text-slate-600 font-medium">บริหารธุรกิจมหาบัณฑิต สาขาวิชาการพัฒนาธุรกิจ อุตสาหกรรมและทรัพยากรมนุษย์</p>
+                        <p class="text-xs text-slate-500 mt-3 flex items-center"><i class="fas fa-university mr-2 text-primary"></i>มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+                    </div>
+                </div>
+
+                <!-- Bachelor's Degree -->
+                <div class="mb-8 flex justify-between flex-row-reverse md:flex-row-reverse items-center w-full left-timeline">
+                    <div class="order-1 w-5/12 hidden md:block"></div>
+                    <div class="z-20 flex items-center order-1 bg-secondary shadow-xl w-10 h-10 rounded-full border-4 border-white absolute md:relative left-[11px] md:left-auto right-auto md:right-auto">
+                        <h1 class="mx-auto font-semibold text-sm text-white"><i class="fas fa-user-graduate"></i></h1>
+                    </div>
+                    <div class="order-1 glass-card rounded-xl shadow-lg w-full md:w-5/12 px-6 py-5 relative border-t-4 border-t-secondary text-left md:text-right ml-12 md:ml-0">
+                        <h3 class="mb-2 font-bold text-slate-800 text-xl">ปริญญาตรี (B.Econ.)</h3>
+                        <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full mb-3">2559 - 2562</span>
+                        <p class="text-sm leading-relaxed text-slate-600 font-medium">เศรษฐศาสตรบัณฑิต</p>
+                        <p class="text-xs text-slate-500 mt-3 flex items-center md:justify-end"><i class="fas fa-university mr-2 text-secondary"></i>จุฬาลงกรณ์มหาวิทยาลัย</p>
+                    </div>
+                </div>
+
+                <!-- High School -->
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12 hidden md:block"></div>
+                    <div class="z-20 flex items-center order-1 bg-slate-500 shadow-xl w-10 h-10 rounded-full border-4 border-white absolute md:relative left-[11px] md:left-auto">
+                        <h1 class="mx-auto font-semibold text-sm text-white"><i class="fas fa-school"></i></h1>
+                    </div>
+                    <div class="order-1 glass-card rounded-xl shadow-lg w-full md:w-5/12 px-6 py-5 relative border-t-4 border-t-slate-500 ml-12 md:ml-0">
+                        <h3 class="mb-2 font-bold text-slate-800 text-xl">มัธยมศึกษา</h3>
+                        <span class="inline-block px-3 py-1 bg-slate-200 text-slate-700 text-xs font-bold rounded-full mb-3">2553 - 2558</span>
+                        <p class="text-xs text-slate-500 mt-3 flex items-center"><i class="fas fa-map-marker-alt mr-2 text-slate-500"></i>โรงเรียนท่าวังผาพิทยาคม จ.น่าน</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. ผลงานโดดเด่น (Outstanding Works / Experience) -->
+    <section id="outstanding" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">3. ผลงานโดดเด่น / ประสบการณ์ทำงาน</h2>
+                <div class="h-1 w-20 bg-primary mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-600 max-w-2xl mx-auto">ประสบการณ์การทำงานในองค์กรภาครัฐและเอกชน ที่หล่อหลอมทักษะด้านการบริหารจัดการ วิชาการ และการประสานงาน</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Job 1 -->
+                <div class="glass-card rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col h-full border-t-4 border-t-primary">
+                    <div class="p-6 flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center text-primary text-xl">
+                                <i class="fas fa-laptop-house"></i>
+                            </div>
+                            <span class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">ปัจจุบัน</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-1">นักวิชาการศึกษา</h3>
+                        <p class="text-sm text-secondary font-medium mb-4">สถาบันพัฒนามหานคร มหาวิทยาลัยนวมินทราธิราช</p>
+                        <p class="text-xs text-slate-400 mb-4"><i class="far fa-calendar-alt mr-1"></i>ปัจจุบัน</p>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-5 marker:text-primary">
+                            <li>สนับสนุนงานวิชาการ พัฒนานักศึกษาของหลักสูตรหลักสูตรเทคโนโลยีบัณฑิต (กลุ่มวิชาเอกการซ่อมบำรุงระบบราง และกลุ่มวิชาเอกการซ่อมบำรุงทรัพยากรอาคาร) หลักสูตรการจัดการบัณฑิต สาขาวิชาการจัดการทรัพยากรอาคาร และหลักสูตรการจัดการบัณฑิต สาขาวิชาการจัดการทรัพยากรอาคาร (กลุ่มนอกเวลาราชการ) </li>
+                            <li>งานประกันคุณภาพการศึกษา (QA)</li>
+                            <li>งานยุทธศาสตร์ โครงการ และเบิกจ่ายงบประมาณ</li>
+                            <li>บริหารจัดการทรัพยากรบุคคลและพัสดุ</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Job 2 -->
+                <div class="glass-card rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col h-full border-t-4 border-t-accent">
+                    <div class="p-6 flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center text-accent text-xl">
+                                <i class="fas fa-book-reader"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-1">นักวิชาการศึกษา</h3>
+                        <p class="text-sm text-accent font-medium mb-4">วิทยาลัยพัฒนาชุมชนเมือง มหาวิทยาลัยนวมินทราธิราช</p>
+                        <p class="text-xs text-slate-400 mb-4"><i class="far fa-calendar-alt mr-1"></i>04 ม.ค. 2565 - 29 พ.ค. 2569</p>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-5 marker:text-accent">
+                            <li>งานสนับสนุนการเรียนการสอนและวิชาการ</li>
+                            <li>ประสานงานขออนุมัติโครงการและจัดทำแผนงบประมาณ</li>
+                            <li>การทำความร่วมมือ MOU และดูแลหลักสูตร</li>
+                            <li>ประสานหน่วยงานภายในและภายนอก</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Job 3 -->
+                <div class="glass-card rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col h-full border-t-4 border-t-teal-500">
+                    <div class="p-6 flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600 text-xl">
+                                <i class="fas fa-hospital-user"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-1">ผู้ช่วยงานบริหารและธุรการ</h3>
+                        <p class="text-sm text-teal-600 font-medium mb-4">คลินิกพิเศษ โรงพยาบาลวชิรพยาบาล</p>
+                        <p class="text-xs text-slate-400 mb-4"><i class="far fa-calendar-alt mr-1"></i>04 ม.ค. 2564 - 31 ธ.ค. 2564</p>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-5 marker:text-teal-500">
+                            <li>ประสานงานธุรการ จัดการและจัดเก็บระบบเอกสาร</li>
+                            <li>จัดทำรายงานสถิติ และเบิกจ่ายค่าตอบแทน</li>
+                            <li>ประสานงานบริการผู้ป่วย นัดหมาย ทำหัตถการร่วมกับบุคลากรทางการแพทย์</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Exp -->
+            <div class="mt-12 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h4 class="text-lg font-bold text-slate-800 mb-6 flex items-center"><i class="fas fa-plus-circle text-secondary mr-2"></i>ประสบการณ์อื่นๆ ที่น่าสนใจ</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/30 transition">
+                        <p class="text-xs text-slate-400 mb-1">2020</p>
+                        <p class="font-bold text-sm text-slate-800">CSR & Barista</p>
+                        <p class="text-xs text-slate-600 mt-1">@ Zeroco Coffee</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/30 transition">
+                        <p class="text-xs text-slate-400 mb-1">2019</p>
+                        <p class="font-bold text-sm text-slate-800">Marketing Intern</p>
+                        <p class="text-xs text-slate-600 mt-1">@ AnnaLuxx Co.,Ltd.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/30 transition">
+                        <p class="text-xs text-slate-400 mb-1">2017 - 2019</p>
+                        <p class="font-bold text-sm text-slate-800">Math & Thai Tutor</p>
+                        <p class="text-xs text-slate-600 mt-1">สอนพิเศษนักเรียน</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/30 transition">
+                        <p class="text-xs text-slate-400 mb-1">2018</p>
+                        <p class="font-bold text-sm text-slate-800">Personnel Assistant</p>
+                        <p class="text-xs text-slate-600 mt-1">@ คณะเศรษฐศาสตร์ จุฬาฯ</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ผลงานวิชาการ (Academic Works) -->
+    <section id="academic" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">4. ผลงานวิชาการ</h2>
+                    <div class="h-1 w-20 bg-primary rounded-full"></div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Academic Item 1 -->
+                <div class="flex bg-slate-50 rounded-xl overflow-hidden border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="w-32 bg-primary/10 flex items-center justify-center text-primary p-4">
+                        <i class="fas fa-book text-4xl"></i>
+                    </div>
+                    <div class="p-5 flex-1">
+                        <span class="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded mb-2 inline-block">คู่มือปฏิบัติงาน</span>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">คู่มือการปฏิบัติงานการจัดการศึกษาและการบริหารหลักสูตร</h3>
+                        <p class="text-sm text-slate-600 line-clamp-2">เพื่อใช้เป็นมาตรฐานในการปฏิบัติงานสนับสนุนวิชาการของสถาบันฯ ให้มีความถูกต้องและรวดเร็ว</p>
+                    </div>
+                </div>
+
+                <!-- Academic Item 2 -->
+                <div class="flex bg-slate-50 rounded-xl overflow-hidden border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="w-32 bg-secondary/10 flex items-center justify-center text-secondary p-4">
+                        <i class="fas fa-file-alt text-4xl"></i>
+                    </div>
+                    <div class="p-5 flex-1">
+                        <span class="text-xs font-semibold text-secondary bg-secondary/10 px-2 py-1 rounded mb-2 inline-block">รายงาน</span>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">รายงานการประเมินคุณภาพการศึกษาภายใน (SAR) ระดับหลักสูตร</h3>
+                        <p class="text-sm text-slate-600 line-clamp-2">รวบรวมข้อมูลและจัดทำรายงานผลการดำเนินงานของหลักสูตรเพื่อรับการประเมินคุณภาพประจำปีการศึกษา</p>
+                    </div>
+                </div>
+                
+                <!-- Academic Item 3 -->
+                <div class="flex bg-slate-50 rounded-xl overflow-hidden border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="w-32 bg-accent/10 flex items-center justify-center text-accent p-4">
+                        <i class="fas fa-project-diagram text-4xl"></i>
+                    </div>
+                    <div class="p-5 flex-1">
+                        <span class="text-xs font-semibold text-accent bg-accent/10 px-2 py-1 rounded mb-2 inline-block">โครงการ</span>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">โครงการพัฒนาระบบสารสนเทศเพื่อการบริหารจัดการข้อมูลนักศึกษา</h3>
+                        <p class="text-sm text-slate-600 line-clamp-2">ร่วมวิเคราะห์ระบบและประสานงานกับทีมพัฒนาเพื่อสร้างระบบฐานข้อมูลที่ตอบโจทย์ผู้ใช้งานจริง</p>
+                    </div>
+                </div>
+
+                 <!-- Academic Item 4 -->
+                 <div class="flex bg-slate-50 rounded-xl overflow-hidden border border-slate-100 hover:shadow-md transition-shadow">
+                    <div class="w-32 bg-teal-500/10 flex items-center justify-center text-teal-600 p-4">
+                        <i class="fas fa-chart-line text-4xl"></i>
+                    </div>
+                    <div class="p-5 flex-1">
+                        <span class="text-xs font-semibold text-teal-600 bg-teal-500/10 px-2 py-1 rounded mb-2 inline-block">บทวิเคราะห์</span>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">บทวิเคราะห์สถิติผู้รับบริการคลินิกพิเศษ</h3>
+                        <p class="text-sm text-slate-600 line-clamp-2">จัดทำรายงานวิเคราะห์เชิงสถิติเพื่อนำเสนอต่อผู้บริหารในการวางแผนอัตรากำลังและช่วงเวลาให้บริการ</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. ผลงานบทความวิจัย (Research Papers) -->
+    <section id="research" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">5. ผลงานบทความวิจัย</h2>
+                <div class="h-1 w-20 bg-primary mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-600 max-w-2xl mx-auto">ผลงานการค้นคว้าและวิจัยเพื่อพัฒนาการทำงานและองค์ความรู้ทางวิชาการ</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Research Paper 1 -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-primary group-hover:w-3 transition-all duration-300"></div>
+                    <div class="ml-4 md:ml-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-blue-100 text-primary text-xs font-bold px-2 py-1 rounded">การบริหารการศึกษา</span>
+                                <span class="text-sm text-slate-500"><i class="far fa-calendar-alt mr-1"></i>2568 (กำลังดำเนินการ)</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">ปัจจัยที่มีผลต่อประสิทธิภาพการทำงานของบุคลากรสายสนับสนุนในสถาบันอุดมศึกษา</h3>
+                            <p class="text-slate-600 text-sm mb-3">การวิจัยเชิงสำรวจเพื่อศึกษาปัจจัยเชิงสภาพแวดล้อมและแรงจูงใจที่ส่งผลต่อการปฏิบัติงาน โดยเน้นการประยุกต์ใช้ในการบริหารทรัพยากรมนุษย์ (ส่วนหนึ่งของการศึกษา ป.โท)</p>
+                            <p class="text-xs text-slate-500 font-medium">ผู้แต่ง: นุสรา สุปัน</p>
+                        </div>
+                        <div class="md:w-32 flex-shrink-0 flex justify-start md:justify-end">
+                            <button class="text-primary hover:text-blue-800 text-sm font-medium flex items-center border border-primary px-4 py-2 rounded-lg hover:bg-blue-50 transition">
+                                <i class="fas fa-file-pdf mr-2"></i>บทคัดย่อ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Research Paper 2 -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-secondary group-hover:w-3 transition-all duration-300"></div>
+                    <div class="ml-4 md:ml-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded">เศรษฐศาสตร์/ธุรกิจ</span>
+                                <span class="text-sm text-slate-500"><i class="far fa-calendar-alt mr-1"></i>2562</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-secondary transition-colors">พฤติกรรมการตัดสินใจเลือกซื้อสินค้าออนไลน์ของกลุ่มนักศึกษาในเขตกรุงเทพมหานคร</h3>
+                            <p class="text-slate-600 text-sm mb-3">การศึกษาเชิงปริมาณเพื่อวิเคราะห์ปัจจัยทางเศรษฐศาสตร์ที่มีผลต่อพฤติกรรมผู้บริโภคในยุคดิจิทัล (สารนิพนธ์ ป.ตรี)</p>
+                            <p class="text-xs text-slate-500 font-medium">ผู้แต่ง: นุสรา สุปัน และคณะ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. งานวิทยากร (Guest Speaker) -->
+    <section id="speaker" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">6. งานวิทยากร</h2>
+                <div class="h-1 w-20 bg-primary mx-auto rounded-full mb-6"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Speaker Card 1 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-center hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-primary text-2xl mb-4">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">การใช้ระบบสารบรรณอิเล็กทรอนิกส์</h3>
+                    <p class="text-sm text-slate-600 mb-4">วิทยากรอบรมเชิงปฏิบัติการ (Workshop) การใช้งานระบบจัดเก็บเอกสารและสารบรรณสำหรับบุคลากรใหม่</p>
+                    <span class="inline-block bg-white text-xs text-slate-500 px-3 py-1 rounded-full border border-slate-200">ภายในองค์กร</span>
+                </div>
+
+                <!-- Speaker Card 2 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-center hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-yellow-100 rounded-full flex items-center justify-center text-secondary text-2xl mb-4">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">เทคนิคการประสานงานอย่างมีประสิทธิภาพ</h3>
+                    <p class="text-sm text-slate-600 mb-4">แบ่งปันประสบการณ์และเทคนิคการสื่อสารข้ามสายงานเพื่อลดข้อผิดพลาดและเพิ่มความรวดเร็ว</p>
+                    <span class="inline-block bg-white text-xs text-slate-500 px-3 py-1 rounded-full border border-slate-200">กิจกรรมแลกเปลี่ยนเรียนรู้ (KM)</span>
+                </div>
+
+                <!-- Speaker Card 3 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 text-center hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center text-green-600 text-2xl mb-4">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">ภาวะผู้นำและการทำงานเป็นทีม</h3>
+                    <p class="text-sm text-slate-600 mb-4">วิทยากรกระบวนการในกิจกรรมปฐมนิเทศนักศึกษาใหม่ ด้านกิจกรรมเสริมหลักสูตร</p>
+                    <span class="inline-block bg-white text-xs text-slate-500 px-3 py-1 rounded-full border border-slate-200">กิจกรรมพัฒนานักศึกษา</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Dashboard รายงานผลงาน -->
+    <section id="dashboard" class="py-20 bg-slate-800 text-white relative overflow-hidden">
+        <!-- Dashboard Background Elements -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 left-10 w-40 h-40 bg-blue-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 right-10 w-60 h-60 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">7. Dashboard สรุปรายงานผลงาน</h2>
+                <div class="h-1 w-20 bg-accent mx-auto rounded-full mb-4"></div>
+                <p class="text-slate-300">ภาพรวมสถิติผลงานและการปฏิบัติภารกิจในระยะเวลา 5 ปีที่ผ่านมา</p>
+            </div>
+
+            <!-- Dashboard Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-slate-700/50 backdrop-blur-sm p-4 rounded-xl text-center border border-slate-600">
+                    <p class="text-slate-400 text-xs mb-1">ผลงานวิชาการ</p>
+                    <p class="text-3xl font-bold text-white">12<span class="text-sm font-normal text-slate-400 ml-1">ชิ้น</span></p>
+                </div>
+                <div class="bg-slate-700/50 backdrop-blur-sm p-4 rounded-xl text-center border border-slate-600">
+                    <p class="text-slate-400 text-xs mb-1">บทความวิจัย</p>
+                    <p class="text-3xl font-bold text-accent">2<span class="text-sm font-normal text-slate-400 ml-1">เรื่อง</span></p>
+                </div>
+                <div class="bg-slate-700/50 backdrop-blur-sm p-4 rounded-xl text-center border border-slate-600">
+                    <p class="text-slate-400 text-xs mb-1">โครงการที่รับผิดชอบ</p>
+                    <p class="text-3xl font-bold text-secondary">24<span class="text-sm font-normal text-slate-400 ml-1">โครงการ</span></p>
+                </div>
+                <div class="bg-slate-700/50 backdrop-blur-sm p-4 rounded-xl text-center border border-slate-600">
+                    <p class="text-slate-400 text-xs mb-1">งานบรรยาย/วิทยากร</p>
+                    <p class="text-3xl font-bold text-teal-400">8<span class="text-sm font-normal text-slate-400 ml-1">ครั้ง</span></p>
+                </div>
+            </div>
+
+            <!-- Charts Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Chart 1: Doughnut -->
+                <div class="bg-slate-700/30 p-6 rounded-2xl border border-slate-600/50 backdrop-blur-md">
+                    <h3 class="text-lg font-medium text-slate-200 mb-4 text-center">สัดส่วนประเภทผลงาน</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="workProportionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Bar -->
+                <div class="bg-slate-700/30 p-6 rounded-2xl border border-slate-600/50 backdrop-blur-md">
+                    <h3 class="text-lg font-medium text-slate-200 mb-4 text-center">สถิติปริมาณงานที่รับผิดชอบ (ย้อนหลัง)</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="workTimelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. สถานที่ติดต่อ (Contact) -->
+    <section id="contact" class="py-20 bg-slate-50 relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-card rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <!-- Decorative Circle -->
+                <div class="absolute -top-16 -right-16 w-32 h-32 bg-secondary/20 rounded-full blur-2xl"></div>
+                
+                <div class="text-center mb-10 relative z-10">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">2. สถานที่ติดต่อ</h2>
+                    <div class="h-1 w-20 bg-primary mx-auto rounded-full mb-4"></div>
+                    <p class="text-slate-600">ยินดีที่ได้รู้จัก และพร้อมร่วมงานหรือแลกเปลี่ยนประสบการณ์ครับ/ค่ะ</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+                    <!-- Phone -->
+                    <div class="text-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-slate-100">
+                        <div class="w-14 h-14 mx-auto bg-blue-50 rounded-full flex items-center justify-center text-primary text-2xl mb-4">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 mb-2">โทรศัพท์</h4>
+                        <p class="text-slate-600 text-sm">09 6678 6655</p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="text-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-slate-100">
+                        <div class="w-14 h-14 mx-auto bg-blue-50 rounded-full flex items-center justify-center text-primary text-2xl mb-4">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 mb-2">อีเมล</h4>
+                        <a href="mailto:nusara2871@gmail.com" class="text-primary text-sm hover:underline">nusara2871@gmail.com</a>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="text-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-slate-100">
+                        <div class="w-14 h-14 mx-auto bg-blue-50 rounded-full flex items-center justify-center text-primary text-2xl mb-4">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 mb-2">ที่อยู่ปัจจุบัน</h4>
+                        <p class="text-slate-600 text-sm">อ.เมือง จ.ปทุมธานี<br>(Mueang, Pathum Thani)</p>
+                    </div>
+                </div>
+                
+                <!-- Social or additional info can go here -->
+                <div class="mt-10 text-center relative z-10">
+                    <button class="bg-slate-800 text-white px-8 py-3 rounded-full font-medium hover:bg-slate-700 transition shadow-lg">
+                        <i class="fas fa-download mr-2"></i>ดาวน์โหลด Resume (PDF)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Fluid Width ตามข้อกำหนด -->
+    <footer class="w-full bg-gray-200 py-8 text-center text-gray-600">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="font-medium text-sm md:text-base">ระบบเว็บส่วนบุคคล พัฒนาโดย [นุสรา สุปัน]</p>
+            <p class="text-xs mt-2 text-gray-500">&copy; <span x-text="new Date().getFullYear()"></span> NUTSARA SUPUN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Alpine.js Component Application Logic -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('portfolioApp', () => ({
+                isLoading: true, // สำหรับ Splash Screen
+                mobileMenuOpen: false,
+                scrolled: false,
+                activeSection: 'home',
+                menuItems: [
+                    { id: 'education', label: '1. ประวัติการศึกษา', icon: 'fas fa-graduation-cap' },
+                    { id: 'contact', label: '2. สถานที่ติดต่อ', icon: 'fas fa-id-card' },
+                    { id: 'outstanding', label: '3. ผลงานโดดเด่น', icon: 'fas fa-star' },
+                    { id: 'academic', label: '4. ผลงานวิชาการ', icon: 'fas fa-book' },
+                    { id: 'research', label: '5. ผลงานบทความวิจัย', icon: 'fas fa-flask' },
+                    { id: 'speaker', label: '6. งานวิทยากร', icon: 'fas fa-microphone' },
+                    { id: 'dashboard', label: '7. Dashboard', icon: 'fas fa-chart-pie' }
+                ],
+                
+                init() {
+                    // จัดการ Splash Screen - จำลองการโหลดหรือรอโหลดเสร็จ
+                    window.addEventListener('load', () => {
+                        // หน่วงเวลาเล็กน้อยให้เห็น Splash Screen
+                        setTimeout(() => {
+                            this.isLoading = false;
+                            
+                            // Initialize Charts หลังจากที่ Splash Screen หายไปและ DOM พร้อม
+                            setTimeout(() => {
+                                this.initCharts();
+                            }, 500);
+                            
+                        }, 1200);
+                    });
+
+                    // จัดการการ Scroll เพื่อเปลี่ยน Style Navbar และ Active Menu
+                    window.addEventListener('scroll', () => {
+                        this.scrolled = window.scrollY > 50;
+                        this.updateActiveSection();
+                    });
+                },
+                
+                scrollTo(id) {
+                    this.mobileMenuOpen = false;
+                    if(id === 'home') {
+                        window.scrollTo({top: 0, behavior: 'smooth'});
+                    } else {
+                        const el = document.getElementById(id);
+                        if(el) {
+                            const offset = 80; // เผื่อความสูงของ Fixed Navbar
+                            const bodyRect = document.body.getBoundingClientRect().top;
+                            const elementRect = el.getBoundingClientRect().top;
+                            const elementPosition = elementRect - bodyRect;
+                            const offsetPosition = elementPosition - offset;
+                            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                        }
+                    }
+                },
+                
+                updateActiveSection() {
+                    const sections = ['home', 'education', 'contact', 'outstanding', 'academic', 'research', 'speaker', 'dashboard'];
+                    let current = 'home';
+                    
+                    for (const section of sections) {
+                        const el = document.getElementById(section);
+                        if (el) {
+                            const rect = el.getBoundingClientRect();
+                            // ถ้า top ของ section อยู่ต่ำกว่า 150px จากขอบบนจอ ถือว่า active
+                            if (rect.top <= 150 && rect.bottom >= 150) {
+                                current = section;
+                                break;
+                            }
+                        }
+                    }
+                    this.activeSection = current;
+                },
+                
+                initCharts() {
+                    // ป้องกัน Chart.js errors ถ้า Canvas ยังไม่มีใน DOM
+                    if(!document.getElementById('workProportionChart')) return;
+                    
+                    // ตั้งค่าสีสำหรับ Dark Theme ของ Dashboard
+                    Chart.defaults.color = '#cbd5e1'; // text-slate-300
+                    Chart.defaults.font.family = "'Prompt', sans-serif";
+                    
+                    // 1. Doughnut Chart: สัดส่วนผลงาน
+                    const ctxProportion = document.getElementById('workProportionChart').getContext('2d');
+                    new Chart(ctxProportion, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['งานสนับสนุนวิชาการ', 'โครงการ/กิจกรรม', 'บทความ/งานวิจัย', 'งานวิทยากร'],
+                            datasets: [{
+                                data: [40, 35, 10, 15],
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.8)',  // primary/blue
+                                    'rgba(245, 158, 11, 0.8)',  // secondary/yellow
+                                    'rgba(20, 184, 166, 0.8)',  // teal
+                                    'rgba(139, 92, 246, 0.8)'   // purple
+                                ],
+                                borderColor: 'rgba(30, 41, 59, 1)', // border เข้ากับพื้นหลัง
+                                borderWidth: 2,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        color: '#cbd5e1',
+                                        font: { size: 12 }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // 2. Bar Chart: สถิติผลงานย้อนหลัง
+                    const ctxTimeline = document.getElementById('workTimelineChart').getContext('2d');
+                    new Chart(ctxTimeline, {
+                        type: 'bar',
+                        data: {
+                            labels: ['2565', '2566', '2567', '2568 (คาดการณ์)'],
+                            datasets: [{
+                                label: 'จำนวนผลงาน/โครงการ (ชิ้น)',
+                                data: [5, 12, 18, 22],
+                                backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                                borderColor: 'rgba(59, 130, 246, 1)',
+                                borderWidth: 1,
+                                borderRadius: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { color: 'rgba(148, 163, 184, 0.1)' } // อ่อนๆ
+                                },
+                                x: {
+                                    grid: { display: false }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false // ซ่อน legend เพราะมี dataset เดียว
+                                }
+                            }
+                        }
+                    });
+                }
+            }));
+        });
+    </script>
+</body>
+</html>
